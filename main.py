@@ -36,10 +36,13 @@ logger.addHandler(file_handler)
 
 
 class MachinefinderMonitor:
-    def __init__(self, config_path='config.json'):
+    def __init__(self, config_path='config.json', machine_id=None):
         # Load configuration
         with open(config_path, 'r') as f:
             self.config = json.load(f)
+        
+        # Set machine ID (used to select URLs from machine_groups)
+        self.machine_id = machine_id
         
         # Initialize components
         self.db = MachinefinderDB(self.config['database']['path'])
@@ -57,10 +60,18 @@ class MachinefinderMonitor:
         if not telegram_ok:
             logger.warning("Telegram connection failed, but continuing with scraping...")
         
-        # Get delay between URLs from config (default 30 seconds)
-        delay_between_urls = self.config.get('delay_between_urls_seconds', 30)
+        # Get delay between URLs from config (default 5 seconds - OPTIMIZED)
+        delay_between_urls = self.config.get('delay_between_urls_seconds', 5)
         
-        for index, search_config in enumerate(self.config['search_urls']):
+        # Get URLs based on machine ID (if specified)
+        if self.machine_id and 'machine_groups' in self.config:
+            search_urls = self.config['machine_groups'].get(str(self.machine_id), [])
+            logger.info(f"🖥️ Running as Machine #{self.machine_id} with {len(search_urls)} URLs")
+        else:
+            # Fallback to old config format
+            search_urls = self.config.get('search_urls', [])
+        
+        for index, search_config in enumerate(search_urls):
             search_title = search_config['title']
             search_url = search_config['url']
             max_price = search_config.get('max_price')  # Get max_price (or None)
@@ -109,7 +120,7 @@ class MachinefinderMonitor:
                         logger.info(f"Cleaned up {deleted_count} old machine(s) for {search_title}")
             
             # Add delay between URLs (except after the last one)
-            if index < len(self.config['search_urls']) - 1:
+            if index < len(search_urls) - 1:
                 logger.info(f"Waiting {delay_between_urls} seconds before next URL...")
                 await asyncio.sleep(delay_between_urls)
         
@@ -303,8 +314,8 @@ class MachinefinderMonitor:
                                 await show_more_button.scroll_into_view_if_needed()
                                 await show_more_button.click()
                                 
-                                # Wait for new content to load
-                                await page.wait_for_timeout(2000)
+                                # Wait for new content to load (OPTIMIZED: 500ms instead of 2s)
+                                await page.wait_for_timeout(500)
                             else:
                                 logger.debug(f"SHOW MORE button not visible. Finished loading after {click_count} clicks.")
                                 break
@@ -502,9 +513,51 @@ class MachinefinderMonitor:
 async def main():
     import sys
     
-    monitor = MachinefinderMonitor()
+    # Check if machine ID is provided via command line (e.g., --machine 1)
+    machine_id = None
+    run_mode = 'continuous'  # default mode
     
-    if len(sys.argv) > 1 and sys.argv[1] == '--once':
+    # Parse command line arguments
+    i = 1
+    while i < len(sys.argv):
+        if sys.argv[i] == '--machine' and i + 1 < len(sys.argv):
+            machine_id = sys.argv[i + 1]
+            i += 2
+        elif sys.argv[i] == '--once':
+            run_mode = 'once'
+            i += 1
+        else:
+            i += 1
+    
+    # If no machine ID provided via command line, ask user
+    if machine_id is None:
+        print("\n" + "="*50)
+        print("🖥️  MACHINEFINDER SCRAPER - MACHINE SELECTION")
+        print("="*50)
+        print("\nSelect which machine this is:")
+        print("  [1] Machine 1 - 11 URLs (Tandem Rollers → Articulated Dump Trucks)")
+        print("  [2] Machine 2 - 2 URLs (Compact Excavators + Compact Track Loaders)")
+        print("\nEnter machine number (1 or 2): ", end="")
+        
+        while True:
+            try:
+                choice = input().strip()
+                if choice in ['1', '2']:
+                    machine_id = choice
+                    break
+                else:
+                    print("Invalid choice! Please enter 1 or 2: ", end="")
+            except (EOFError, KeyboardInterrupt):
+                print("\n\n❌ Cancelled by user.")
+                return
+    
+    print(f"\n✅ Selected Machine #{machine_id}")
+    print("="*50 + "\n")
+    
+    # Initialize monitor with machine ID
+    monitor = MachinefinderMonitor(machine_id=machine_id)
+    
+    if run_mode == 'once':
         # Run once and exit
         await monitor.run_once()
     else:

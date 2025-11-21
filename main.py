@@ -97,7 +97,13 @@ class MachinefinderMonitor:
         delay_between_urls = self.config.get('delay_between_urls_seconds', 5)
         
         # Get URLs based on machine ID (if specified)
-        if self.machine_id and 'machine_groups' in self.config:
+        if self.machine_id == 'ALL' and 'machine_groups' in self.config:
+            # Special case: combine ALL URLs from all machine groups
+            search_urls = []
+            for machine_group in self.config['machine_groups'].values():
+                search_urls.extend(machine_group)
+            logger.info(f"🖥️ Running as Machine ALL with {len(search_urls)} URLs (from all groups)")
+        elif self.machine_id and 'machine_groups' in self.config:
             search_urls = self.config['machine_groups'].get(str(self.machine_id), [])
             logger.info(f"🖥️ Running as Machine #{self.machine_id} with {len(search_urls)} URLs")
         else:
@@ -606,16 +612,17 @@ async def main():
         print("\nSelect which machine this is:")
         print("  [1] Machine 1 - 11 URLs (Tandem Rollers → Articulated Dump Trucks)")
         print("  [2] Machine 2 - 2 URLs (Compact Excavators + Compact Track Loaders)")
-        print("\nEnter machine number (1 or 2): ", end="")
+        print("  [ALL] ALL Machines - 13 URLs (Machine 1 + Machine 2 combined)")
+        print("\nEnter machine number (1, 2, or ALL): ", end="")
         
         while True:
             try:
-                choice = input().strip()
-                if choice in ['1', '2']:
+                choice = input().strip().upper()
+                if choice in ['1', '2', 'ALL']:
                     machine_id = choice
                     break
                 else:
-                    print("Invalid choice! Please enter 1 or 2: ", end="")
+                    print("Invalid choice! Please enter 1, 2, or ALL: ", end="")
             except (EOFError, KeyboardInterrupt):
                 print("\n\n❌ Cancelled by user.")
                 return

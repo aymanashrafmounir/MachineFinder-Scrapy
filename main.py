@@ -119,33 +119,52 @@ class MachinefinderMonitor:
         """Scrape machines from a single URL using Playwright"""
         machines = []
         
+        logger.info("🔧 Launching memory-optimized browser...")
+        
         async with async_playwright() as p:
-            # Launch browser with memory-efficient settings for low-resource servers
-            # Optimized for Debian with 2 CPU cores and 1GB RAM
+            # Launch browser with OPTIMIZED memory-efficient settings
+            # Optimized for low-resource servers (1-2GB RAM)
             browser = await p.chromium.launch(
                 headless=True,
                 args=[
                     '--disable-blink-features=AutomationControlled',
-                    '--disable-dev-shm-usage',  # Overcome limited resource problems
+                    '--disable-dev-shm-usage',  # Use /tmp instead of /dev/shm (critical for low RAM)
                     '--disable-gpu',  # Disable GPU hardware acceleration
+                    '--disable-gpu-compositing',  # Additional GPU optimization
                     '--disable-software-rasterizer',
                     '--disable-extensions',
+                    '--disable-plugins',
                     '--no-sandbox',  # Required for some Linux environments
-                    '--single-process',  # Use single process to save memory
                     '--disable-setuid-sandbox',
                     '--disable-background-networking',
                     '--disable-background-timer-throttling',
                     '--disable-backgrounding-occluded-windows',
                     '--disable-renderer-backgrounding',
                     '--disable-web-security',  # May help with CORS issues
-                    '--disable-features=IsolateOrigins,site-per-process',  # Reduce memory
-                    '--js-flags=--max-old-space-size=256',  # Limit JavaScript heap to 256MB
+                    '--disable-features=IsolateOrigins,site-per-process,VizDisplayCompositor',  # Reduce memory
+                    '--js-flags=--max-old-space-size=128',  # Limit JavaScript heap to 128MB (reduced from 256MB)
+                    '--disable-logging',
+                    '--disable-permissions-api',
+                    '--disable-notifications',
+                    '--disable-offer-store-unmasked-wallet-cards',
+                    '--disable-speech-api',
+                    '--hide-scrollbars',
+                    '--mute-audio',
+                    '--no-first-run',
+                    '--no-default-browser-check',
+                    '--metrics-recording-only',
+                    '--disable-hang-monitor',
+                    '--disable-prompt-on-repost',
+                    '--disable-sync',
+                    '--disable-translate',
+                    '--safebrowsing-disable-auto-update',
+                    '--disable-client-side-phishing-detection',
                 ]
             )
             
-            # Create context with realistic settings
+            # Create context with reduced viewport (optimized for memory)
             context = await browser.new_context(
-                viewport={'width': 1920, 'height': 1080},
+                viewport={'width': 1366, 'height': 768},  # Reduced from 1920x1080 to save memory
                 user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
             )
             

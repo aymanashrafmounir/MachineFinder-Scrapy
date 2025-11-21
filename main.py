@@ -34,6 +34,22 @@ file_handler.setFormatter(file_formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
+# ⏱️ TIMING LOGGER - Dedicated logger for performance tracking (10MB limit)
+timing_logger = logging.getLogger('timing')
+timing_logger.setLevel(logging.INFO)
+timing_logger.propagate = False  # Don't send to parent logger
+
+timing_handler = RotatingFileHandler(
+    'timing_log.txt',
+    maxBytes=10 * 1024 * 1024,  # 10MB max
+    backupCount=3,               # Keep 3 backup files
+    encoding='utf-8'
+)
+timing_handler.setLevel(logging.INFO)
+timing_formatter = logging.Formatter('%(asctime)s - %(message)s')
+timing_handler.setFormatter(timing_formatter)
+timing_logger.addHandler(timing_handler)
+
 
 class MachinefinderMonitor:
     def __init__(self, config_path='config.json', machine_id=None):
@@ -50,6 +66,9 @@ class MachinefinderMonitor:
             self.config['telegram']['bot_token'],
             self.config['telegram']['chat_id']
         )
+        
+        # ⏱️ Cycle counter for timing logs
+        self.cycle_count = 0
     
     async def run_once(self):
         """Run a single scraping cycle for all configured URLs"""
@@ -57,9 +76,17 @@ class MachinefinderMonitor:
         import time
         cycle_start_time = time.time()
         
+        # Increment cycle counter
+        self.cycle_count += 1
+        
         logger.info("="*60)
-        logger.info("🚀 Starting scraping cycle...")
+        logger.info(f"🚀 Starting scraping cycle #{self.cycle_count}...")
         logger.info("="*60)
+        
+        # ⏱️ Log cycle start in timing log
+        timing_logger.info("="*80)
+        timing_logger.info(f"CYCLE #{self.cycle_count} STARTED")
+        timing_logger.info("="*80)
         
         # Test Telegram connection
         telegram_ok = await self.notifier.test_connection()
@@ -128,6 +155,9 @@ class MachinefinderMonitor:
             url_seconds = int(url_duration % 60)
             logger.info(f"⏱️  URL completed in: {url_minutes}m {url_seconds}s ({url_duration:.1f}s)")
             
+            # ⏱️ Log to timing log
+            timing_logger.info(f"  [{search_title}] → {url_minutes}m {url_seconds}s ({url_duration:.1f}s) | {len(machines)} items | {len(new_machines)} new")
+            
             # CLEANUP: Remove old machines not in current scrape
             cleanup_enabled = self.config.get('cleanup_enabled', True)
             if cleanup_enabled:
@@ -158,6 +188,12 @@ class MachinefinderMonitor:
         logger.info(f"✅ Scraping cycle completed!")
         logger.info(f"⏱️  CYCLE DURATION: {cycle_minutes} minutes, {cycle_seconds} seconds ({cycle_duration_seconds:.2f}s total)")
         logger.info("="*60)
+        
+        # ⏱️ Log cycle summary to timing log
+        timing_logger.info("")
+        timing_logger.info(f"CYCLE #{self.cycle_count} COMPLETED → {cycle_minutes}m {cycle_seconds}s ({cycle_duration_seconds:.1f}s total)")
+        timing_logger.info("="*80)
+        timing_logger.info("")  # Empty line for readability
     
     async def _scrape_url(self, search_url, search_title, max_price=None):
         """Scrape machines from a single URL using Playwright"""

@@ -5,6 +5,11 @@
   },
   "search_urls": [
     {
+      "title": "Tandem Rollers",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers",
+      "max_price": 100000
+    },
+    {
       "title": "Wheel Loaders",
       "url": "https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders",
       "max_price": 10000000
@@ -62,11 +67,6 @@
     {
       "title": "Articulated Dump Trucks",
       "url": "https://www.machinefinder.com/ww/en-US/categories/used-articulated-dump-trucks",
-      "max_price": 100000
-    },
-    {
-      "title": "Tandem Rollers",
-      "url": "https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers",
       "max_price": 100000
     }
   ],

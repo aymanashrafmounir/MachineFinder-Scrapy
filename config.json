@@ -1,0 +1,79 @@
+{
+  "telegram": {
+    "bot_token": "8375122848:AAHk893BojkXt8dM2HdRoHM7cDdFoUIEiOo",
+    "chat_id": "-1003453834185"
+  },
+  "search_urls": [
+    {
+      "title": "Wheel Loaders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders",
+      "max_price": 10000000
+    },
+    {
+      "title": "Compact Loaders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-compact_loaders",
+      "max_price": 100000
+    },
+    {
+      "title": "Backhoes",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-backhoes",
+      "max_price": 100000
+    },
+    {
+      "title": "Skid Steer Loaders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-skid-steer-loaders",
+      "max_price": 100000
+    },
+    {
+      "title": "Compact Track Loaders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-compact-track-loaders",
+      "max_price": 100000
+    },
+    {
+      "title": "Compact Excavators",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-compact_excavators",
+      "max_price": 100000
+    },
+    {
+      "title": "Excavators",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-excavators",
+      "max_price": 100000
+    },
+    {
+      "title": "Motor Graders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-motor-graders",
+      "max_price": 100000
+    },
+    {
+      "title": "Crawler Dozers",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-crawler-dozers",
+      "max_price": 100000
+    },
+    {
+      "title": "Crawler Loaders",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-crawler-loaders",
+      "max_price": 100000
+    },
+    {
+      "title": "Telehandlers",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-telehanders",
+      "max_price": 100000
+    },
+    {
+      "title": "Articulated Dump Trucks",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-articulated-dump-trucks",
+      "max_price": 100000
+    },
+    {
+      "title": "Tandem Rollers",
+      "url": "https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers",
+      "max_price": 100000
+    }
+  ],
+  "database": {
+    "path": "machinefinder.db"
+  },
+  "cleanup_enabled": true,
+  "scrape_interval_minutes": 2,
+  "delay_between_urls_seconds": 10
+}

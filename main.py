@@ -171,9 +171,9 @@ class MachinefinderMonitor:
             page = await context.new_page()
             
             try:
-                # Navigate to the page
+                # Navigate to the page (use domcontentloaded to save memory)
                 logger.info(f"Loading page: {search_url}")
-                response = await page.goto(search_url, wait_until='networkidle', timeout=60000)
+                response = await page.goto(search_url, wait_until='domcontentloaded', timeout=45000)
                 logger.debug(f"Page loaded with status: {response.status}")
                 
                 # Wait for Angular to bootstrap and initial content to load

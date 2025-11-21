@@ -79,5 +79,5 @@
   },
   "cleanup_enabled": true,
   "scrape_interval_minutes": 2,
-  "delay_between_urls_seconds": 5
+  "delay_between_urls_seconds": 2
 }

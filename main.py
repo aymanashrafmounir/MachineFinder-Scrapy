@@ -22,7 +22,7 @@ console_handler.setFormatter(console_formatter)
 # Rotating file handler (max 2KB, keep 1 backup)
 file_handler = RotatingFileHandler(
     'scraper_log.txt',
-    maxBytes=2048,  # 2KB max
+    maxBytes=20480,  # 20KB max
     backupCount=1,   # Keep only 1 backup file
     encoding='utf-8'
 )
@@ -53,7 +53,13 @@ class MachinefinderMonitor:
     
     async def run_once(self):
         """Run a single scraping cycle for all configured URLs"""
-        logger.info("Starting scraping cycle...")
+        # ⏱️ TIMING DEBUGGER: Start tracking cycle time
+        import time
+        cycle_start_time = time.time()
+        
+        logger.info("="*60)
+        logger.info("🚀 Starting scraping cycle...")
+        logger.info("="*60)
         
         # Test Telegram connection
         telegram_ok = await self.notifier.test_connection()
@@ -76,23 +82,33 @@ class MachinefinderMonitor:
             search_url = search_config['url']
             max_price = search_config.get('max_price')  # Get max_price (or None)
             
+            # ⏱️ Start timing this URL
+            url_start_time = time.time()
+            
             logger.info(f"Scraping: {search_title} - {search_url}")
+            
+            # CHECK: Is this the first run for this category?
+            existing_count = len(self.db.get_existing_ids(search_title))
+            is_first_run = (existing_count == 0)
+            
+            if is_first_run:
+                logger.info(f"🔵 FIRST RUN detected for '{search_title}' - will populate database WITHOUT notifications")
             
             # Run scraper for this URL
             machines = await self._scrape_url(search_url, search_title, max_price)
             
-            # Process scraped machines
-            new_machines = []
+            # Process scraped machines using OPTIMIZED batch processing
+            # OLD: N queries (slow with 1000+ items)
+            # NEW: 3 queries total (10-100x faster!)
+            new_machines = self.db.batch_process_machines(machines, search_title)
             
-            for machine in machines:
-                is_new = self.db.add_machine(machine)
-                if is_new:
-                    new_machines.append(machine)
-                    logger.info(f"New machine found: {machine['title']}")
-            
-            # Send notifications for new machines
-            if new_machines:
+            # Send notifications ONLY if NOT first run
+            if new_machines and not is_first_run:
                 logger.info(f"Found {len(new_machines)} new machine(s) for {search_title}")
+                
+                # Log each new machine (only when NOT first run)
+                for machine in new_machines:
+                    logger.info(f"  → New: {machine['title']}")
                 
                 # TEST MODE: Only send 1 notification for testing
                 TEST_MODE = False
@@ -101,8 +117,16 @@ class MachinefinderMonitor:
                     await self.notifier.send_new_items_notification(search_title, new_machines[:1])
                 else:
                     await self.notifier.send_new_items_notification(search_title, new_machines)
+            elif new_machines and is_first_run:
+                logger.info(f"✅ Database populated with {len(new_machines)} existing item(s) for {search_title} (no notifications sent)")
             else:
                 logger.info(f"No new machines found for {search_title}")
+            
+            # ⏱️ Display timing for this URL
+            url_duration = time.time() - url_start_time
+            url_minutes = int(url_duration // 60)
+            url_seconds = int(url_duration % 60)
+            logger.info(f"⏱️  URL completed in: {url_minutes}m {url_seconds}s ({url_duration:.1f}s)")
             
             # CLEANUP: Remove old machines not in current scrape
             cleanup_enabled = self.config.get('cleanup_enabled', True)
@@ -124,7 +148,16 @@ class MachinefinderMonitor:
                 logger.info(f"Waiting {delay_between_urls} seconds before next URL...")
                 await asyncio.sleep(delay_between_urls)
         
-        logger.info("Scraping cycle completed!")
+        # ⏱️ TIMING DEBUGGER: Calculate and display cycle duration
+        cycle_end_time = time.time()
+        cycle_duration_seconds = cycle_end_time - cycle_start_time
+        cycle_minutes = int(cycle_duration_seconds // 60)
+        cycle_seconds = int(cycle_duration_seconds % 60)
+        
+        logger.info("="*60)
+        logger.info(f"✅ Scraping cycle completed!")
+        logger.info(f"⏱️  CYCLE DURATION: {cycle_minutes} minutes, {cycle_seconds} seconds ({cycle_duration_seconds:.2f}s total)")
+        logger.info("="*60)
     
     async def _scrape_url(self, search_url, search_title, max_price=None):
         """Scrape machines from a single URL using Playwright"""
@@ -187,9 +220,9 @@ class MachinefinderMonitor:
                 response = await page.goto(search_url, wait_until='domcontentloaded', timeout=45000)
                 logger.debug(f"Page loaded with status: {response.status}")
                 
-                # Wait for Angular to bootstrap and initial content to load
-                logger.debug("Waiting for page JavaScript to execute...")
-                await page.wait_for_timeout(10000)  # Give Angular 10 seconds to bootstrap
+                # Wait for Angular to bootstrap and initial content to load (OPTIMIZED)
+                logger.debug("Waiting for page to become interactive...")
+                await page.wait_for_timeout(3000)  # OPTIMIZED: 3s is enough for Angular to start
                 
                 # APPLY PRICE FILTER IF CONFIGURED
                 if max_price:
@@ -202,7 +235,7 @@ class MachinefinderMonitor:
                         if hours_price_panel:
                             logger.debug("Clicking Hours & Price panel...")
                             await hours_price_panel.click()
-                            await page.wait_for_timeout(2000)  # Wait for panel to expand
+                            await page.wait_for_timeout(800)  # OPTIMIZED: 800ms is enough
                             
                             # Step 2: Enter max price in the input field
                             logger.debug(f"Entering max price: {max_price}")
@@ -211,7 +244,7 @@ class MachinefinderMonitor:
                             if price_input:
                                 await price_input.click()
                                 await price_input.fill(str(max_price))
-                                await page.wait_for_timeout(1000)
+                                await page.wait_for_timeout(400)  # OPTIMIZED: 400ms is enough
                                 
                                 # Step 3: Click the VIEW button using JavaScript (most reliable method)
                                 logger.debug("Clicking VIEW button via JavaScript...")
@@ -230,9 +263,9 @@ class MachinefinderMonitor:
                                     if clicked:
                                         logger.debug("✓ Clicked VIEW button!")
                                         
-                                        # Wait for filtered results to load
+                                        # Wait for filtered results to load (OPTIMIZED)
                                         logger.debug("Waiting for filtered results to load...")
-                                        await page.wait_for_timeout(5000)
+                                        await page.wait_for_timeout(2000)  # OPTIMIZED: 2s instead of 5s
                                         
                                         try:
                                             await page.wait_for_selector('div.tile', timeout=10000)
@@ -314,8 +347,8 @@ class MachinefinderMonitor:
                                 await show_more_button.scroll_into_view_if_needed()
                                 await show_more_button.click()
                                 
-                                # Wait for new content to load (OPTIMIZED: 500ms instead of 2s)
-                                await page.wait_for_timeout(500)
+                                # Wait for new content to load (OPTIMIZED: 300ms is enough)
+                                await page.wait_for_timeout(300)
                             else:
                                 logger.debug(f"SHOW MORE button not visible. Finished loading after {click_count} clicks.")
                                 break

@@ -1,0 +1,123 @@
+2025-11-21 05:43:23,304 - INFO - Starting continuous monitoring (interval: 2 minutes)
+2025-11-21 05:43:23,306 - INFO - ============================================================
+2025-11-21 05:43:23,307 - INFO - 🚀 Starting scraping cycle...
+2025-11-21 05:43:23,307 - INFO - ============================================================
+2025-11-21 05:43:23,570 - INFO - 🖥️ Running as Machine #1 with 11 URLs
+2025-11-21 05:43:23,571 - INFO - Scraping: Tandem Rollers - https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers
+2025-11-21 05:43:23,572 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:43:24,289 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers
+2025-11-21 05:43:54,349 - INFO - Found 17 machine tiles in HTML
+2025-11-21 05:43:54,366 - INFO - Found 17 total machines
+2025-11-21 05:43:54,444 - INFO - No new machines found for Tandem Rollers
+2025-11-21 05:43:54,446 - INFO - Waiting 5 seconds before next URL...
+2025-11-21 05:43:59,448 - INFO - Scraping: Wheel Loaders - https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders
+2025-11-21 05:43:59,449 - INFO - 🔵 FIRST RUN detected for 'Wheel Loaders' - will populate database WITHOUT notifications
+2025-11-21 05:43:59,449 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:44:00,255 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders
+2025-11-21 05:46:04,035 - INFO - Starting continuous monitoring (interval: 2 minutes)
+2025-11-21 05:46:04,035 - INFO - ============================================================
+2025-11-21 05:46:04,035 - INFO - 🚀 Starting scraping cycle...
+2025-11-21 05:46:04,036 - INFO - ============================================================
+2025-11-21 05:46:04,314 - INFO - 🖥️ Running as Machine #1 with 11 URLs
+2025-11-21 05:46:04,314 - INFO - Scraping: Tandem Rollers - https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers
+2025-11-21 05:46:04,315 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:46:05,151 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-tandem-rollers
+2025-11-21 05:46:23,333 - INFO - Found 17 machine tiles in HTML
+2025-11-21 05:46:23,351 - INFO - Found 17 total machines
+2025-11-21 05:46:23,446 - INFO - No new machines found for Tandem Rollers
+2025-11-21 05:46:23,446 - INFO - ⏱️  URL completed in: 0m 19s (19.1s)
+2025-11-21 05:46:23,448 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:46:25,463 - INFO - Scraping: Wheel Loaders - https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders
+2025-11-21 05:46:25,470 - INFO - 🔵 FIRST RUN detected for 'Wheel Loaders' - will populate database WITHOUT notifications
+2025-11-21 05:46:25,470 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:46:26,373 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-wheel-loaders
+2025-11-21 05:47:16,394 - INFO - Found 961 machine tiles in HTML
+2025-11-21 05:47:17,465 - INFO - Found 961 total machines
+2025-11-21 05:47:17,558 - INFO - ✅ Database populated with 961 existing item(s) for Wheel Loaders (no notifications sent)
+2025-11-21 05:47:17,558 - INFO - ⏱️  URL completed in: 0m 52s (52.1s)
+2025-11-21 05:47:17,562 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:47:19,570 - INFO - Scraping: Compact Loaders - https://www.machinefinder.com/ww/en-US/categories/used-compact_loaders
+2025-11-21 05:47:19,570 - INFO - 🔵 FIRST RUN detected for 'Compact Loaders' - will populate database WITHOUT notifications
+2025-11-21 05:47:19,570 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:47:20,361 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-compact_loaders
+2025-11-21 05:47:44,512 - INFO - Found 224 machine tiles in HTML
+2025-11-21 05:47:44,846 - INFO - Found 224 total machines
+2025-11-21 05:47:44,942 - INFO - ✅ Database populated with 224 existing item(s) for Compact Loaders (no notifications sent)
+2025-11-21 05:47:44,943 - INFO - ⏱️  URL completed in: 0m 25s (25.4s)
+2025-11-21 05:47:44,946 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:47:46,953 - INFO - Scraping: Backhoes - https://www.machinefinder.com/ww/en-US/categories/used-backhoes
+2025-11-21 05:47:46,954 - INFO - 🔵 FIRST RUN detected for 'Backhoes' - will populate database WITHOUT notifications
+2025-11-21 05:47:46,954 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:47:47,864 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-backhoes
+2025-11-21 05:48:19,743 - INFO - Found 268 machine tiles in HTML
+2025-11-21 05:48:20,064 - INFO - Found 268 total machines
+2025-11-21 05:48:20,152 - INFO - ✅ Database populated with 268 existing item(s) for Backhoes (no notifications sent)
+2025-11-21 05:48:20,152 - INFO - ⏱️  URL completed in: 0m 33s (33.2s)
+2025-11-21 05:48:20,155 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:48:22,170 - INFO - Scraping: Skid Steer Loaders - https://www.machinefinder.com/ww/en-US/categories/used-skid-steer-loaders
+2025-11-21 05:48:22,170 - INFO - 🔵 FIRST RUN detected for 'Skid Steer Loaders' - will populate database WITHOUT notifications
+2025-11-21 05:48:22,172 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:48:22,959 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-skid-steer-loaders
+2025-11-21 05:49:17,407 - INFO - Found 1036 machine tiles in HTML
+2025-11-21 05:49:18,735 - INFO - Found 1036 total machines
+2025-11-21 05:49:18,889 - INFO - ✅ Database populated with 1036 existing item(s) for Skid Steer Loaders (no notifications sent)
+2025-11-21 05:49:18,890 - INFO - ⏱️  URL completed in: 0m 56s (56.7s)
+2025-11-21 05:49:18,893 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:49:20,902 - INFO - Scraping: Excavators - https://www.machinefinder.com/ww/en-US/categories/used-excavators
+2025-11-21 05:49:20,903 - INFO - 🔵 FIRST RUN detected for 'Excavators' - will populate database WITHOUT notifications
+2025-11-21 05:49:20,903 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:49:21,615 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-excavators
+2025-11-21 05:49:46,038 - INFO - Found 273 machine tiles in HTML
+2025-11-21 05:49:46,401 - INFO - Found 273 total machines
+2025-11-21 05:49:46,490 - INFO - ✅ Database populated with 273 existing item(s) for Excavators (no notifications sent)
+2025-11-21 05:49:46,490 - INFO - ⏱️  URL completed in: 0m 25s (25.6s)
+2025-11-21 05:49:46,493 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:49:48,498 - INFO - Scraping: Motor Graders - https://www.machinefinder.com/ww/en-US/categories/used-motor-graders
+2025-11-21 05:49:48,499 - INFO - 🔵 FIRST RUN detected for 'Motor Graders' - will populate database WITHOUT notifications
+2025-11-21 05:49:48,500 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:49:49,312 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-motor-graders
+2025-11-21 05:50:07,790 - INFO - Found 42 machine tiles in HTML
+2025-11-21 05:50:07,841 - INFO - Found 42 total machines
+2025-11-21 05:50:07,950 - INFO - ✅ Database populated with 42 existing item(s) for Motor Graders (no notifications sent)
+2025-11-21 05:50:07,951 - INFO - ⏱️  URL completed in: 0m 19s (19.5s)
+2025-11-21 05:50:07,953 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:50:09,953 - INFO - Scraping: Crawler Dozers - https://www.machinefinder.com/ww/en-US/categories/used-crawler-dozers
+2025-11-21 05:50:09,954 - INFO - 🔵 FIRST RUN detected for 'Crawler Dozers' - will populate database WITHOUT notifications
+2025-11-21 05:50:09,954 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:50:10,750 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-crawler-dozers
+2025-11-21 05:50:29,720 - INFO - Found 72 machine tiles in HTML
+2025-11-21 05:50:29,819 - INFO - Found 72 total machines
+2025-11-21 05:50:29,930 - INFO - ✅ Database populated with 72 existing item(s) for Crawler Dozers (no notifications sent)
+2025-11-21 05:50:29,930 - INFO - ⏱️  URL completed in: 0m 19s (20.0s)
+2025-11-21 05:50:29,933 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:50:31,934 - INFO - Scraping: Crawler Loaders - https://www.machinefinder.com/ww/en-US/categories/used-crawler-loaders
+2025-11-21 05:50:31,935 - INFO - 🔵 FIRST RUN detected for 'Crawler Loaders' - will populate database WITHOUT notifications
+2025-11-21 05:50:31,935 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:50:32,714 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-crawler-loaders
+2025-11-21 05:50:51,092 - INFO - Found 5 machine tiles in HTML
+2025-11-21 05:50:51,097 - INFO - Found 5 total machines
+2025-11-21 05:50:51,184 - INFO - ✅ Database populated with 5 existing item(s) for Crawler Loaders (no notifications sent)
+2025-11-21 05:50:51,184 - INFO - ⏱️  URL completed in: 0m 19s (19.3s)
+2025-11-21 05:50:51,187 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:50:53,190 - INFO - Scraping: Telehandlers - https://www.machinefinder.com/ww/en-US/categories/used-telehanders
+2025-11-21 05:50:53,191 - INFO - 🔵 FIRST RUN detected for 'Telehandlers' - will populate database WITHOUT notifications
+2025-11-21 05:50:53,191 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:50:53,965 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-telehanders
+2025-11-21 05:51:12,970 - INFO - Found 56 machine tiles in HTML
+2025-11-21 05:51:13,031 - INFO - Found 56 total machines
+2025-11-21 05:51:13,120 - INFO - ✅ Database populated with 56 existing item(s) for Telehandlers (no notifications sent)
+2025-11-21 05:51:13,120 - INFO - ⏱️  URL completed in: 0m 19s (19.9s)
+2025-11-21 05:51:13,122 - INFO - Waiting 2 seconds before next URL...
+2025-11-21 05:51:15,123 - INFO - Scraping: Articulated Dump Trucks - https://www.machinefinder.com/ww/en-US/categories/used-articulated-dump-trucks
+2025-11-21 05:51:15,125 - INFO - 🔵 FIRST RUN detected for 'Articulated Dump Trucks' - will populate database WITHOUT notifications
+2025-11-21 05:51:15,125 - INFO - 🔧 Launching memory-optimized browser...
+2025-11-21 05:51:15,918 - INFO - Loading page: https://www.machinefinder.com/ww/en-US/categories/used-articulated-dump-trucks
+2025-11-21 05:51:33,844 - INFO - Found 13 machine tiles in HTML
+2025-11-21 05:51:33,857 - INFO - Found 13 total machines
+2025-11-21 05:51:33,951 - INFO - ✅ Database populated with 13 existing item(s) for Articulated Dump Trucks (no notifications sent)
+2025-11-21 05:51:33,951 - INFO - ⏱️  URL completed in: 0m 18s (18.8s)
+2025-11-21 05:51:33,953 - INFO - ============================================================
+2025-11-21 05:51:33,954 - INFO - ✅ Scraping cycle completed!
+2025-11-21 05:51:33,954 - INFO - ⏱️  CYCLE DURATION: 5 minutes, 29 seconds (329.92s total)
+2025-11-21 05:51:33,954 - INFO - ============================================================
+2025-11-21 05:51:33,954 - INFO - Waiting 2 minutes until next cycle...

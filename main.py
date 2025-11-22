@@ -264,6 +264,7 @@ class MachinefinderMonitor:
                     '--disable-software-rasterizer',
                     '--disable-extensions',
                     '--disable-plugins',
+                    '--disable-images',
                     '--no-sandbox',  # Required for some Linux environments
                     '--disable-setuid-sandbox',
                     '--disable-background-networking',
@@ -325,7 +326,7 @@ class MachinefinderMonitor:
                         if hours_price_panel:
                             logger.debug("Clicking Hours & Price panel...")
                             await hours_price_panel.click()
-                            await page.wait_for_timeout(2000)  # Wait for panel to expand
+                            await page.wait_for_timeout(3000)  # Reduced Angular wait for panel to expand
                             
                             # Step 2: Enter max price in the input field
                             logger.debug(f"Entering max price: {max_price}")
@@ -438,7 +439,7 @@ class MachinefinderMonitor:
                                 await show_more_button.click()
                                 
                                 # Wait for new content to load (OPTIMIZED: 200ms for faster scraping)
-                                await page.wait_for_timeout(200)
+                                await page.wait_for_load_state('networkidle')  # Wait for network idle after SHOW MORE
                             else:
                                 logger.debug(f"SHOW MORE button not visible. Finished loading after {click_count} clicks.")
                                 break

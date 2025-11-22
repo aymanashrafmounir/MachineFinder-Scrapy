@@ -200,7 +200,35 @@ class MachinefinderMonitor:
         timing_logger.info("="*70)
         timing_logger.info("")  # Empty line for readability
         
+        # Cleanup: Remove Playwright temp files and cache
+        self._cleanup_browser_cache()
+        
         logger.info("Scraping cycle completed!")
+    
+    def _cleanup_browser_cache(self):
+        """Clean up Playwright browser cache and temp files"""
+        try:
+            import shutil
+            import tempfile
+            
+            # Clean up temp directory (Playwright creates temp files here)
+            temp_dir = tempfile.gettempdir()
+            
+            # Find and remove Playwright temp directories
+            for item in os.listdir(temp_dir):
+                if 'playwright' in item.lower() or 'chromium' in item.lower():
+                    item_path = os.path.join(temp_dir, item)
+                    try:
+                        if os.path.isdir(item_path):
+                            shutil.rmtree(item_path, ignore_errors=True)
+                        elif os.path.isfile(item_path):
+                            os.remove(item_path)
+                    except:
+                        pass  # Skip if file is in use
+            
+            logger.debug("Browser cache cleanup completed")
+        except Exception as e:
+            logger.debug(f"Cache cleanup skipped: {e}")
     
     async def _scrape_url(self, search_url, search_title, max_price=None, url_index=0, total_urls=0):
         """Scrape machines from a single URL using Playwright"""

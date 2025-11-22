@@ -44,9 +44,18 @@ file_handler.setFormatter(file_formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-# Timing logger (separate file, cleared on each run)
+# Timing logger (separate file, cleared on each run) - ALSO SHOW IN CONSOLE
 timing_logger = logging.getLogger('timing')
 timing_logger.setLevel(logging.INFO)
+
+# Console handler for timing (so you see progress in terminal)
+timing_console_handler = logging.StreamHandler()
+timing_console_handler.setLevel(logging.INFO)
+timing_console_formatter = logging.Formatter('%(message)s')  # Simple format for console
+timing_console_handler.setFormatter(timing_console_formatter)
+timing_logger.addHandler(timing_console_handler)
+
+# File handler for timing
 timing_handler = RotatingFileHandler(
     'timing_log.txt',
     maxBytes=50 * 1024 * 1024,  # 50MB max
@@ -298,12 +307,12 @@ class MachinefinderMonitor:
                     logger.info(f"[{url_index}/{total_urls}] Loading page: {search_url}")
                 else:
                     logger.info(f"Loading page: {search_url}")
-                response = await page.goto(search_url, wait_until='domcontentloaded', timeout=45000)
+                response = await page.goto(search_url, wait_until='domcontentloaded', timeout=30000)  # OPTIMIZED: 30s timeout
                 logger.debug(f"Page loaded with status: {response.status}")
                 
                 # Wait for Angular to bootstrap and initial content to load
                 logger.debug("Waiting for page JavaScript to execute...")
-                await page.wait_for_timeout(10000)  # Give Angular 10 seconds to bootstrap
+                await page.wait_for_timeout(5000)  # OPTIMIZED: 5 seconds (was 10s)
                 
                 # APPLY PRICE FILTER IF CONFIGURED
                 if max_price:

@@ -179,32 +179,42 @@ class MachinefinderDB:
     # Full machine data is NOT stored in DB anymore (only IDs)
     # Machine details come directly from scraping for notifications
     
-    def cleanup_missing_machines(self, search_title: str, current_ids: set) -> int:
-        """Remove machines for this category that are not in current_ids.
-        Returns the number of machines deleted."""
+    def cleanup_old_machines(self, search_title: str = None, days_threshold: int = 60) -> int:
+        """Remove machines that haven't been seen in the last N days.
+        
+        Args:
+            search_title: Optional. If provided, only cleanup this category. If None, cleanup all.
+            days_threshold: Number of days. Items not seen in this many days will be deleted. Default: 60 days
+        
+        Returns:
+            Number of machines deleted
+        """
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Get existing IDs for this category
-        cursor.execute('SELECT id FROM machines WHERE search_title = ?', (search_title,))
-        existing_ids = {row[0] for row in cursor.fetchall()}
-        
-        # Find IDs to delete (exist in DB but not in current scrape)
-        ids_to_delete = existing_ids - current_ids
-        
-        if ids_to_delete:
-            # Delete these machines
-            placeholders = ','.join('?' * len(ids_to_delete))
-            cursor.execute(
-                f'DELETE FROM machines WHERE id IN ({placeholders})',
-                tuple(ids_to_delete)
-            )
+        try:
+            if search_title:
+                # Cleanup specific category
+                cursor.execute('''
+                    DELETE FROM machines 
+                    WHERE search_title = ? 
+                    AND datetime(last_seen) < datetime('now', '-' || ? || ' days')
+                ''', (search_title, days_threshold))
+            else:
+                # Cleanup all categories
+                cursor.execute('''
+                    DELETE FROM machines 
+                    WHERE datetime(last_seen) < datetime('now', '-' || ? || ' days')
+                ''', (days_threshold,))
+            
             deleted_count = cursor.rowcount
-        else:
-            deleted_count = 0
-        
-        conn.commit()
-        conn.close()
-        
-        return deleted_count
+            conn.commit()
+            return deleted_count
+            
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            conn.close()
+
 

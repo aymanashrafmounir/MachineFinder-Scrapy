@@ -420,8 +420,8 @@ class MachinefinderMonitor:
                                 await show_more_button.scroll_into_view_if_needed()
                                 await show_more_button.click()
                                 
-                                # Wait for new content to load (OPTIMIZED: 500ms instead of 2s)
-                                await page.wait_for_timeout(500)
+                                # Wait for new content to load (OPTIMIZED: 200ms for faster scraping)
+                                await page.wait_for_timeout(200)
                             else:
                                 logger.debug(f"SHOW MORE button not visible. Finished loading after {click_count} clicks.")
                                 break

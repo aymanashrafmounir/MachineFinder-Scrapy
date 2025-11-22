@@ -1,0 +1,86 @@
+{
+    "telegram": {
+        "bot_token": "8375122848:AAHk893BojkXt8dM2HdRoHM7cDdFoUIEiOo",
+        "chat_id": "-1003453834185"
+    },
+    "machine_groups": {
+        "1": [
+            {
+                "title": "Tandem Rollers",
+                "search_kind": "wg_rollers",
+                "bcat": "tandem_rollers"
+            },
+            {
+                "title": "Wheel Loaders",
+                "search_kind": "wheel_loaders",
+                "bcat": "wheel_loaders"
+            },
+            {
+                "title": "Compact Loaders",
+                "search_kind": "cwp",
+                "bcat": "compact_loaders"
+            },
+            {
+                "title": "Backhoes",
+                "search_kind": "backhoe_loaders",
+                "bcat": "backhoe_loaders"
+            },
+            {
+                "title": "Skid Steer Loaders",
+                "search_kind": "cwp",
+                "bcat": "skid_steer_loaders"
+            },
+            {
+                "title": "Excavators",
+                "search_kind": "excavators",
+                "bcat": "excavators"
+            },
+            {
+                "title": "Motor Graders",
+                "search_kind": "motor_graders",
+                "bcat": "motor_graders"
+            },
+            {
+                "title": "Crawler Dozers",
+                "search_kind": "crawler_dozers",
+                "bcat": "crawler_dozers"
+            },
+            {
+                "title": "Crawler Loaders",
+                "search_kind": "crawler_loaders",
+                "bcat": "crawler_loaders"
+            },
+            {
+                "title": "Telehandlers",
+                "search_kind": "telehandlers",
+                "bcat": "telehandlers"
+            },
+            {
+                "title": "Articulated Dump Trucks",
+                "search_kind": "trucks",
+                "bcat": "at_dump_trucks"
+            },
+            {
+                "title": "Wheeled Excavators",
+                "search_kind": "excavators",
+                "bcat": "wheeled_excavators"
+            }
+        ],
+        "2": [
+            {
+                "title": "Compact Excavators",
+                "search_kind": "cwp",
+                "bcat": "compact_excavators"
+            },
+            {
+                "title": "Compact Track Loaders",
+                "search_kind": "cwp",
+                "bcat": "compact_trk_loaders"
+            }
+        ]
+    },
+    "database": {
+        "path": "machinefinder.db"
+    },
+    "cycle_delay_seconds": 120
+}

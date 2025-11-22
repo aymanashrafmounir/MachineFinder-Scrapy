@@ -23,8 +23,8 @@ class TelegramNotifier:
         try:
             for machine in machines:
                 await self._send_machine_notification(search_title, machine)
-                # Small delay between messages to avoid rate limiting
-                await asyncio.sleep(1)
+                # Delay between messages to avoid Telegram flood control
+                await asyncio.sleep(3)
         except TelegramError as e:
             logger.error(f"Error sending Telegram notification: {e}")
     
@@ -116,4 +116,3 @@ class TelegramNotifier:
         except TelegramError as e:
             logger.error(f"Failed to connect to Telegram: {e}")
             return False
-

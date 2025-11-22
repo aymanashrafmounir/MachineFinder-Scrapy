@@ -4,12 +4,22 @@ from logging.handlers import RotatingFileHandler
 import asyncio
 import sys
 import re
+import time
+import os
+from datetime import datetime
 from urllib.parse import urljoin
 from playwright.async_api import async_playwright
 from database import MachinefinderDB
 from telegram_notifier import TelegramNotifier
 
-# Configure logging with rotation (max 2KB per file)
+# Delete old timing log on startup (fresh start each run)
+if os.path.exists('timing_log.txt'):
+    try:
+        os.remove('timing_log.txt')
+    except:
+        pass
+
+# Configure main logger (50MB max per file)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -19,10 +29,10 @@ console_handler.setLevel(logging.INFO)
 console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 console_handler.setFormatter(console_formatter)
 
-# Rotating file handler (max 2KB, keep 1 backup)
+# Rotating file handler for general logs (max 50MB, keep 1 backup)
 file_handler = RotatingFileHandler(
     'scraper_log.txt',
-    maxBytes=2048,  # 2KB max
+    maxBytes=50 * 1024 * 1024,  # 50MB max
     backupCount=1,   # Keep only 1 backup file
     encoding='utf-8'
 )
@@ -34,6 +44,21 @@ file_handler.setFormatter(file_formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
+# Timing logger (separate file, cleared on each run)
+timing_logger = logging.getLogger('timing')
+timing_logger.setLevel(logging.INFO)
+timing_handler = RotatingFileHandler(
+    'timing_log.txt',
+    maxBytes=50 * 1024 * 1024,  # 50MB max
+    backupCount=1,
+    encoding='utf-8'
+)
+timing_handler.setLevel(logging.INFO)
+timing_formatter = logging.Formatter('%(asctime)s - %(message)s')
+timing_handler.setFormatter(timing_formatter)
+timing_logger.addHandler(timing_handler)
+
+
 
 class MachinefinderMonitor:
     def __init__(self, config_path='config.json', machine_id=None):
@@ -44,6 +69,9 @@ class MachinefinderMonitor:
         # Set machine ID (used to select URLs from machine_groups)
         self.machine_id = machine_id
         
+        # Initialize cycle counter
+        self.cycle_counter = 0
+        
         # Initialize components
         self.db = MachinefinderDB(self.config['database']['path'])
         self.notifier = TelegramNotifier(
@@ -53,7 +81,13 @@ class MachinefinderMonitor:
     
     async def run_once(self):
         """Run a single scraping cycle for all configured URLs"""
-        logger.info("Starting scraping cycle...")
+        self.cycle_counter += 1
+        cycle_start_time = time.time()
+        timing_logger.info("="*70)
+        timing_logger.info(f"🚀 CYCLE #{self.cycle_counter} START - Machine #{self.machine_id}")
+        timing_logger.info("="*70)
+        
+        logger.info(f"Starting scraping cycle #{self.cycle_counter}...")
         
         # Test Telegram connection
         telegram_ok = await self.notifier.test_connection()
@@ -77,6 +111,7 @@ class MachinefinderMonitor:
             max_price = search_config.get('max_price')  # Get max_price (or None)
             
             logger.info(f"Scraping: {search_title} - {search_url}")
+            url_start_time = time.time()
             
             # Check if this is first run (database is empty for this search_title)
             existing_count = len(self.db.get_existing_ids(search_title))
@@ -91,7 +126,7 @@ class MachinefinderMonitor:
             retry_count = 0
             
             for attempt in range(MAX_RETRIES + 1):  # 1 initial attempt + 10 retries
-                machines = await self._scrape_url(search_url, search_title, max_price)
+                machines = await self._scrape_url(search_url, search_title, max_price, index + 1, len(search_urls))
                 
                 if len(machines) > 0:
                     # Success!
@@ -149,14 +184,25 @@ class MachinefinderMonitor:
                 if deleted_count > 0:
                     logger.info(f"Cleaned up {deleted_count} old machine(s) for {search_title}")
             
+            # Log URL timing
+            url_elapsed = time.time() - url_start_time
+            timing_logger.info(f"📊 {search_title}: {url_elapsed:.2f}s | Items: {len(machines)} | New: {len(new_machines)}")
+            
             # Add delay between URLs (except after the last one)
             if index < len(search_urls) - 1:
                 logger.info(f"Waiting {delay_between_urls} seconds before next URL...")
                 await asyncio.sleep(delay_between_urls)
         
+        # Log cycle timing
+        cycle_elapsed = time.time() - cycle_start_time
+        timing_logger.info("="*70)
+        timing_logger.info(f"✅ CYCLE #{self.cycle_counter} COMPLETE - Total time: {cycle_elapsed:.2f}s ({cycle_elapsed/60:.2f} minutes)")
+        timing_logger.info("="*70)
+        timing_logger.info("")  # Empty line for readability
+        
         logger.info("Scraping cycle completed!")
     
-    async def _scrape_url(self, search_url, search_title, max_price=None):
+    async def _scrape_url(self, search_url, search_title, max_price=None, url_index=0, total_urls=0):
         """Scrape machines from a single URL using Playwright"""
         machines = []
         
@@ -211,7 +257,11 @@ class MachinefinderMonitor:
             
             try:
                 # Navigate to the page (use domcontentloaded to save memory)
-                logger.info(f"Loading page: {search_url}")
+                # Log with progress counter if available
+                if url_index > 0 and total_urls > 0:
+                    logger.info(f"[{url_index}/{total_urls}] Loading page: {search_url}")
+                else:
+                    logger.info(f"Loading page: {search_url}")
                 response = await page.goto(search_url, wait_until='domcontentloaded', timeout=45000)
                 logger.debug(f"Page loaded with status: {response.status}")
                 
@@ -451,7 +501,6 @@ class MachinefinderMonitor:
         
         # Find all machine tiles using BeautifulSoup
         tiles = soup.select('a[ng-repeat*="results_machines"]')
-        logger.info(f"Found {len(tiles)} machine tiles in HTML")
         
         for tile in tiles:
             try:
